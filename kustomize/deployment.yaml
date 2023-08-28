@@ -12,7 +12,7 @@ spec:
   revisionHistoryLimit: 14
   strategy:
     rollingUpdate:
-      maxSurge: 50% # how many extra resources can be created to achieve a rollout
+      maxSurge: 50% # how many extra resources can be created to achieve a rollout.
       maxUnavailable: 50% #  maximum number of Pods that can be unavailable during a rolling update
     type: RollingUpdate
   replicas: 1
