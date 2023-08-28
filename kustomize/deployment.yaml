@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-deployment
+  labels:
+    app: user
+spec:
+  progressDeadlineSeconds: 600 # if the rollout fails to progress in 10 minutes, then the deployment is marked as failed
+  minReadySeconds: 60 # deployment must wait for 60 seconds after seeing a Pod become healthy before moving on to updating the next Pod
+  # We do daily rollouts, limit the revision history to two weeks of
+  # releases as we don't expect to roll back beyond that.
+  revisionHistoryLimit: 14
+  strategy:
+    rollingUpdate:
+      maxSurge: 50% # how many extra resources can be created to achieve a rollout
+      maxUnavailable: 50% #  maximum number of Pods that can be unavailable during a rolling update
+    type: RollingUpdate
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user
+  template:
+    metadata:
+      labels:
+        app: user
+      annotations:
+        kubernetes.io/change-cause: "Rollback to version 1.0.0"
+    spec:
+      containers:
+        - name: user
+          image: docker.io/rattayo/user-service:1.0.0
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              port: 8080
+              path: /health/ready
+          livenessProbe:
+            httpGet:
+              port: 8080
+              path: /health/alive
