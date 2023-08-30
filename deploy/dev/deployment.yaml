@@ -6,4 +6,9 @@ metadata:
   name: user-service
 spec:
   replicas: 2
+  template:
+    spec:
+      containers:
+        - name: user
+          image: docker.io/rattayo/user-service:1.0.1
 
