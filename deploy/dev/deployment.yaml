@@ -4,3 +4,6 @@ metadata:
   labels:
     stage: dev
   name: user-service
+spec:
+  replicas: 2
+
